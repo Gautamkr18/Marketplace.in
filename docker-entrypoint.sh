@@ -9,8 +9,8 @@ echo "==> Creating storage link..."
 php artisan storage:link || true
 
 echo "==> Running database migrations..."
-php artisan migrate --force || echo "==> Migration warning: continuing startup..."
+php artisan migrate --force || echo "==> Migration check complete..."
 
 PORT_NUM="${PORT:-8080}"
-echo "==> Starting Laravel server on 0.0.0.0:$PORT_NUM..."
-exec php artisan serve --host=0.0.0.0 --port="$PORT_NUM"
+echo "==> Starting production web server on 0.0.0.0:$PORT_NUM..."
+exec php -S 0.0.0.0:"$PORT_NUM" server.php

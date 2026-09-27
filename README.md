@@ -1,6 +1,12 @@
 # 🛒 Marketplace Web Application
 
-A modern, fast, and responsive classifieds marketplace web application built with **Laravel 12** and **Tailwind CSS**.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://marketplacein-production.up.railway.app)
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+
+A modern, fast, and responsive classifieds marketplace web application built with **Laravel 12**, **MySQL**, and **Tailwind CSS**.
+
+🔗 **Live Deployment:** [https://marketplacein-production.up.railway.app](https://marketplacein-production.up.railway.app)
 
 ---
 

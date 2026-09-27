@@ -19,6 +19,9 @@ php artisan storage:link || true
 echo "==> Running database migrations..."
 php artisan migrate --force || echo "==> Migration check complete..."
 
+echo "==> Auto-seeding initial categories & data..."
+php artisan db:seed --force || echo "==> Seeding check complete..."
+
 PORT_NUM="${PORT:-8080}"
 echo "==> Starting production web server on 0.0.0.0:$PORT_NUM..."
 exec php -S 0.0.0.0:"$PORT_NUM" server.php

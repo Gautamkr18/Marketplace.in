@@ -374,16 +374,49 @@
             animation: slideUp 0.3s ease;
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
+        /* Pagination Styling */
+        .pagination {
+            gap: 6px;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .pagination .page-item .page-link {
+            border-radius: 8px !important;
+            color: var(--mp-navy);
+            border: 1px solid var(--mp-border);
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 8px 14px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            background: #fff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--mp-navy) !important;
+            border-color: var(--mp-navy) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 10px rgba(0, 47, 52, 0.2);
+        }
+
+        .pagination .page-item .page-link:hover:not(.active) {
+            background-color: #e0f2f1;
+            color: var(--mp-teal);
+            border-color: var(--mp-teal);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #94a3b8;
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .pagination svg {
+            width: 1rem;
+            height: 1rem;
         }
     </style>
     @yield('styles')

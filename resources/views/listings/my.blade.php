@@ -17,8 +17,8 @@
         <div class="col-12 col-md-6 col-lg-4">
             <div class="mp-card">
                 <div class="mp-card-img-wrap">
-                    @if($listing->image)
-                        <img src="{{ str_starts_with($listing->image, 'http') ? $listing->image : asset('storage/'.$listing->image) }}" alt="{{ $listing->name }}">
+                    @if($listing->image_url)
+                        <img src="{{ $listing->image_url }}" alt="{{ $listing->name }}">
                     @else
                         <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-light text-muted">
                             <i class="fa-solid fa-image fs-1 opacity-50 mb-1"></i>

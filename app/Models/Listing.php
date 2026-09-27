@@ -76,8 +76,16 @@ class Listing extends Model
         if (!$this->image) {
             return null;
         }
-        return str_starts_with($this->image, 'http')
-            ? $this->image
-            : asset('storage/'.$this->image);
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        $path = ltrim($this->image, '/');
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        return asset('storage/' . $path);
     }
 }

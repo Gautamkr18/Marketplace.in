@@ -21,7 +21,7 @@
         <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4" style="background:#fff;">
             <div class="position-relative bg-dark text-center" style="min-height: 360px; max-height: 480px; display: flex; align-items: center; justify-content: center;">
                 @if($listing->image_url)
-                    <img src="{{ $listing->image_url }}" alt="{{ $listing->name }}" class="img-fluid w-100" style="max-height: 480px; object-fit: contain;">
+                    <img src="{{ $listing->image_url }}" alt="{{ $listing->name }}" class="img-fluid w-100" style="max-height: 480px; object-fit: contain;" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'p-5 text-white-50\'><i class=\'fa-solid fa-image fs-1 mb-2\'></i><div>No Image Available</div></div>';">
                 @else
                     <div class="p-5 text-white-50">
                         <i class="fa-solid fa-image fs-1 mb-2"></i>

@@ -35,3 +35,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/listing/{listing}', [ListingController::class, 'update'])->name('listings.update');
     Route::delete('/listing/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
 });
+
+// Storage fallback route for uploaded files (handles missing symlink on production platforms)
+Route::get('/storage/{path}', function (string $path) {
+    $filePath = storage_path('app/public/'.$path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    return response()->file($filePath);
+})->where('path', '.*')->name('storage.local');
+

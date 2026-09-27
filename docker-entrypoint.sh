@@ -13,7 +13,9 @@ php artisan config:clear || true
 php artisan route:clear || true
 php artisan view:clear || true
 
-echo "==> Creating storage link..."
+echo "==> Creating storage directory and link..."
+mkdir -p storage/app/public/listings
+rm -rf public/storage
 php artisan storage:link || true
 
 echo "==> Running database migrations..."

@@ -78,9 +78,9 @@
                     <!-- Image -->
                     <div class="mb-4">
                         <label class="form-label fw-bold text-uppercase small text-muted">Photo</label>
-                        @if($listing->image)
+                        @if($listing->image_url)
                             <div class="mb-2">
-                                <img src="{{ str_starts_with($listing->image, 'http') ? $listing->image : asset('storage/'.$listing->image) }}" class="img-thumbnail rounded-3" style="max-height:140px">
+                                <img src="{{ $listing->image_url }}" class="img-thumbnail rounded-3" style="max-height:140px">
                             </div>
                         @endif
                         <input type="file" name="image" class="form-control" accept="image/*">

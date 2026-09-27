@@ -75,15 +75,60 @@
                         </div>
                     </div>
 
-                    <!-- Image -->
+                    <!-- Image Upload Zone -->
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-uppercase small text-muted">Photo</label>
+                        <label class="form-label fw-bold text-uppercase small text-muted d-flex justify-content-between align-items-center">
+                            <span>Listing Photo</span>
+                            <span class="badge bg-light text-muted border">Change Photo</span>
+                        </label>
+
                         @if($listing->image_url)
-                            <div class="mb-2">
-                                <img src="{{ $listing->image_url }}" class="img-thumbnail rounded-3" style="max-height:140px">
+                            <div class="mb-3 p-3 bg-light rounded-3 border text-center" id="currentImageWrapper">
+                                <div class="small fw-bold text-muted mb-2"><i class="fa-solid fa-image me-1"></i> Current Photo:</div>
+                                <img src="{{ $listing->image_url }}" class="img-thumbnail rounded-3 shadow-sm mx-auto d-block" style="max-height: 180px; object-fit: contain;">
                             </div>
                         @endif
-                        <input type="file" name="image" class="form-control" accept="image/*">
+
+                        <!-- Nav tabs for upload method -->
+                        <ul class="nav nav-pills nav-fill mb-3 bg-light p-1 rounded-3" id="imageTabsEdit" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active py-2 fw-bold small" id="upload-tab-edit" data-bs-toggle="pill" data-bs-target="#tab-upload-edit" type="button" role="tab"><i class="fa-solid fa-cloud-arrow-up me-1"></i> Upload New File</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2 fw-bold small" id="url-tab-edit" data-bs-toggle="pill" data-bs-target="#tab-url-edit" type="button" role="tab"><i class="fa-solid fa-link me-1"></i> Image URL / Link</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="imageTabContentEdit">
+                            <!-- Tab: File Upload -->
+                            <div class="tab-pane fade show active" id="tab-upload-edit" role="tabpanel">
+                                <div class="p-4 border-2 border-dashed rounded-3 text-center bg-light position-relative" id="dropZoneEdit" style="border-style: dashed !important; border-color: #cbd5e1; cursor: pointer;">
+                                    <i class="fa-solid fa-images fs-1 text-teal mb-2" style="color: var(--mp-teal);"></i>
+                                    <div class="fw-bold text-dark">Click to browse or drag & drop new photo</div>
+                                    <small class="text-muted d-block mb-2">PNG, JPG, WEBP, GIF up to 8MB</small>
+                                    <input type="file" name="image" id="imageInputEdit" class="d-none" accept="image/*" onchange="previewImageEdit(this)">
+                                    <button type="button" class="btn btn-outline-dark btn-sm px-3 mt-1" onclick="document.getElementById('imageInputEdit').click()"><i class="fa-solid fa-folder-open me-1"></i> Choose New File</button>
+                                </div>
+                            </div>
+
+                            <!-- Tab: Image URL -->
+                            <div class="tab-pane fade" id="tab-url-edit" role="tabpanel">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="fa-solid fa-image text-muted"></i></span>
+                                    <input type="url" name="image_url_input" id="imageUrlInputEdit" class="form-control" placeholder="https://images.unsplash.com/photo-... or any image URL" oninput="previewUrlImageEdit(this.value)">
+                                </div>
+                                <small class="text-muted mt-1 d-block">Paste a direct image link from Unsplash, Google, or any web host.</small>
+                            </div>
+                        </div>
+
+                        <!-- Unified Preview Container -->
+                        <div id="imagePreviewContainerEdit" class="mt-3 p-3 bg-light rounded-3 border text-center d-none position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-bold text-success"><i class="fa-solid fa-eye me-1"></i> New Photo Preview</span>
+                                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="clearSelectedImageEdit()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                            </div>
+                            <img id="imagePreviewEdit" src="" class="img-thumbnail rounded-3 shadow-sm mx-auto d-block" style="max-height: 200px; object-fit: contain;">
+                        </div>
                     </div>
 
                     <!-- Location details -->
@@ -137,5 +182,77 @@
                 });
             });
     });
+
+    const dropZoneEdit = document.getElementById('dropZoneEdit');
+    const imageInputEdit = document.getElementById('imageInputEdit');
+
+    if (dropZoneEdit && imageInputEdit) {
+        dropZoneEdit.addEventListener('click', (e) => {
+            if (e.target !== imageInputEdit && !e.target.closest('button')) {
+                imageInputEdit.click();
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZoneEdit.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZoneEdit.classList.add('bg-white', 'border-primary');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZoneEdit.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZoneEdit.classList.remove('bg-white', 'border-primary');
+            }, false);
+        });
+
+        dropZoneEdit.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files.length > 0) {
+                imageInputEdit.files = files;
+                previewImageEdit(imageInputEdit);
+            }
+        });
+    }
+
+    function previewImageEdit(input) {
+        const preview = document.getElementById('imagePreviewEdit');
+        const container = document.getElementById('imagePreviewContainerEdit');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                container.classList.remove('d-none');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewUrlImageEdit(url) {
+        const preview = document.getElementById('imagePreviewEdit');
+        const container = document.getElementById('imagePreviewContainerEdit');
+        if (url && url.trim().startsWith('http')) {
+            preview.src = url.trim();
+            container.classList.remove('d-none');
+        } else if (!document.getElementById('imageInputEdit').files.length) {
+            container.classList.add('d-none');
+        }
+    }
+
+    function clearSelectedImageEdit() {
+        const imageInput = document.getElementById('imageInputEdit');
+        const imageUrlInput = document.getElementById('imageUrlInputEdit');
+        const container = document.getElementById('imagePreviewContainerEdit');
+        const preview = document.getElementById('imagePreviewEdit');
+
+        if (imageInput) imageInput.value = '';
+        if (imageUrlInput) imageUrlInput.value = '';
+        if (preview) preview.src = '';
+        if (container) container.classList.add('d-none');
+    }
 </script>
 @endsection

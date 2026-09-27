@@ -91,15 +91,50 @@
 
                     <!-- Image Upload Zone -->
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-uppercase small text-muted">Upload Photo</label>
-                        <div class="p-4 border-2 border-dashed rounded-3 text-center bg-light" id="dropZone" style="border-style: dashed !important; border-color: #cbd5e1;">
-                            <i class="fa-solid fa-images fs-1 text-teal mb-2" style="color: var(--mp-teal);"></i>
-                            <div class="fw-bold text-dark">Click to upload or drag & drop listing photo</div>
-                            <small class="text-muted d-block mb-3">PNG, JPG, WEBP up to 4MB</small>
-                            <input type="file" name="image" id="imageInput" class="form-control" accept="image/*" onchange="previewImage(this)">
-                            <div id="imagePreviewContainer" class="mt-3 d-none">
-                                <img id="imagePreview" src="" class="img-thumbnail rounded-3 shadow-sm" style="max-height: 200px;">
+                        <label class="form-label fw-bold text-uppercase small text-muted d-flex justify-content-between align-items-center">
+                            <span>Listing Photo</span>
+                            <span class="badge bg-light text-muted border">Optional</span>
+                        </label>
+
+                        <!-- Nav tabs for upload method -->
+                        <ul class="nav nav-pills nav-fill mb-3 bg-light p-1 rounded-3" id="imageTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active py-2 fw-bold small" id="upload-tab" data-bs-toggle="pill" data-bs-target="#tab-upload" type="button" role="tab"><i class="fa-solid fa-cloud-arrow-up me-1"></i> Upload File</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2 fw-bold small" id="url-tab" data-bs-toggle="pill" data-bs-target="#tab-url" type="button" role="tab"><i class="fa-solid fa-link me-1"></i> Image URL / Link</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="imageTabContent">
+                            <!-- Tab: File Upload -->
+                            <div class="tab-pane fade show active" id="tab-upload" role="tabpanel">
+                                <div class="p-4 border-2 border-dashed rounded-3 text-center bg-light position-relative" id="dropZone" style="border-style: dashed !important; border-color: #cbd5e1; cursor: pointer;">
+                                    <i class="fa-solid fa-images fs-1 text-teal mb-2" style="color: var(--mp-teal);"></i>
+                                    <div class="fw-bold text-dark">Click to browse or drag & drop photo here</div>
+                                    <small class="text-muted d-block mb-2">PNG, JPG, WEBP, GIF up to 8MB</small>
+                                    <input type="file" name="image" id="imageInput" class="d-none" accept="image/*" onchange="previewImage(this)">
+                                    <button type="button" class="btn btn-outline-dark btn-sm px-3 mt-1" onclick="document.getElementById('imageInput').click()"><i class="fa-solid fa-folder-open me-1"></i> Choose File</button>
+                                </div>
                             </div>
+
+                            <!-- Tab: Image URL -->
+                            <div class="tab-pane fade" id="tab-url" role="tabpanel">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="fa-solid fa-image text-muted"></i></span>
+                                    <input type="url" name="image_url_input" id="imageUrlInput" class="form-control" placeholder="https://images.unsplash.com/photo-... or any image URL" oninput="previewUrlImage(this.value)">
+                                </div>
+                                <small class="text-muted mt-1 d-block">Paste a direct image link from Unsplash, Google, or any web host.</small>
+                            </div>
+                        </div>
+
+                        <!-- Unified Preview Container -->
+                        <div id="imagePreviewContainer" class="mt-3 p-3 bg-light rounded-3 border text-center d-none position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-bold text-muted"><i class="fa-solid fa-eye me-1"></i> Image Preview</span>
+                                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="clearSelectedImage()"><i class="fa-solid fa-xmark"></i> Remove</button>
+                            </div>
+                            <img id="imagePreview" src="" class="img-thumbnail rounded-3 shadow-sm mx-auto d-block" style="max-height: 220px; object-fit: contain;">
                         </div>
                     </div>
 
@@ -159,6 +194,42 @@
             });
     });
 
+    const dropZone = document.getElementById('dropZone');
+    const imageInput = document.getElementById('imageInput');
+
+    if (dropZone && imageInput) {
+        dropZone.addEventListener('click', (e) => {
+            if (e.target !== imageInput && !e.target.closest('button')) {
+                imageInput.click();
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('bg-white', 'border-primary');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('bg-white', 'border-primary');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files.length > 0) {
+                imageInput.files = files;
+                previewImage(imageInput);
+            }
+        });
+    }
+
     function previewImage(input) {
         const preview = document.getElementById('imagePreview');
         const container = document.getElementById('imagePreviewContainer');
@@ -167,9 +238,33 @@
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 container.classList.remove('d-none');
-            }
+            };
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    function previewUrlImage(url) {
+        const preview = document.getElementById('imagePreview');
+        const container = document.getElementById('imagePreviewContainer');
+        if (url && url.trim().startsWith('http')) {
+            preview.src = url.trim();
+            container.classList.remove('d-none');
+        } else if (!document.getElementById('imageInput').files.length) {
+            container.classList.add('d-none');
+        }
+    }
+
+    function clearSelectedImage() {
+        const imageInput = document.getElementById('imageInput');
+        const imageUrlInput = document.getElementById('imageUrlInput');
+        const container = document.getElementById('imagePreviewContainer');
+        const preview = document.getElementById('imagePreview');
+
+        if (imageInput) imageInput.value = '';
+        if (imageUrlInput) imageUrlInput.value = '';
+        if (preview) preview.src = '';
+        if (container) container.classList.add('d-none');
+    }
 </script>
 @endsection
+

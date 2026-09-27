@@ -30,14 +30,19 @@ class ListingController extends Controller
             'city' => ['required', 'string', 'max:100'],
             'area' => ['nullable', 'string', 'max:100'],
             'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'max:4096'],
+            'image' => ['nullable', 'image', 'max:8192'],
+            'image_url_input' => ['nullable', 'url', 'max:1000'],
         ]);
 
         $validated['user_id'] = $request->user()->id;
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('listings', 'public');
+        } elseif ($request->filled('image_url_input')) {
+            $validated['image'] = $request->image_url_input;
         }
+
+        unset($validated['image_url_input']);
 
         $listing = Listing::create($validated);
 
@@ -82,15 +87,20 @@ class ListingController extends Controller
             'city' => ['required', 'string', 'max:100'],
             'area' => ['nullable', 'string', 'max:100'],
             'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'max:4096'],
+            'image' => ['nullable', 'image', 'max:8192'],
+            'image_url_input' => ['nullable', 'url', 'max:1000'],
         ]);
 
         if ($request->hasFile('image')) {
-            if ($listing->image) {
+            if ($listing->image && !str_starts_with($listing->image, 'http')) {
                 Storage::disk('public')->delete($listing->image);
             }
             $validated['image'] = $request->file('image')->store('listings', 'public');
+        } elseif ($request->filled('image_url_input')) {
+            $validated['image'] = $request->image_url_input;
         }
+
+        unset($validated['image_url_input']);
 
         $listing->update($validated);
 

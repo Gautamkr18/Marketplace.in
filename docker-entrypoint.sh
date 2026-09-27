@@ -1,5 +1,13 @@
 #!/bin/sh
 
+echo "==> Setting up storage and cache permissions..."
+mkdir -p storage/framework/cache/data
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+mkdir -p bootstrap/cache
+chmod -R 777 storage bootstrap/cache
+
 echo "==> Clearing application cache..."
 php artisan config:clear || true
 php artisan route:clear || true

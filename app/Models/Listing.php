@@ -77,7 +77,7 @@ class Listing extends Model
             return null;
         }
 
-        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+        if (str_starts_with($this->image, 'data:image') || str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
             return $this->image;
         }
 

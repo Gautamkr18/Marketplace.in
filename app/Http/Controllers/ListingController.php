@@ -37,7 +37,10 @@ class ListingController extends Controller
         $validated['user_id'] = $request->user()->id;
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('listings', 'public');
+            $file = $request->file('image');
+            $mime = $file->getMimeType() ?: 'image/jpeg';
+            $data = file_get_contents($file->getRealPath());
+            $validated['image'] = 'data:'.$mime.';base64,'.base64_encode($data);
         } elseif ($request->filled('image_url_input')) {
             $validated['image'] = $request->image_url_input;
         }
@@ -92,10 +95,10 @@ class ListingController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($listing->image && !str_starts_with($listing->image, 'http')) {
-                Storage::disk('public')->delete($listing->image);
-            }
-            $validated['image'] = $request->file('image')->store('listings', 'public');
+            $file = $request->file('image');
+            $mime = $file->getMimeType() ?: 'image/jpeg';
+            $data = file_get_contents($file->getRealPath());
+            $validated['image'] = 'data:'.$mime.';base64,'.base64_encode($data);
         } elseif ($request->filled('image_url_input')) {
             $validated['image'] = $request->image_url_input;
         }

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('area')->nullable();
 
-            $table->string('image')->nullable();
+            $table->longText('image')->nullable();
             $table->boolean('is_active')->default(true);
 
             $table->timestamps();

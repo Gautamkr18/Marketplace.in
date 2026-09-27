@@ -8,6 +8,7 @@ A modern, fast, and responsive classifieds marketplace web application built wit
 
 🔗 **Live Deployment:** [https://marketplacein-production.up.railway.app](https://marketplacein-production.up.railway.app)
 
+    DEMO VIDEO: https://drive.google.com/file/d/1hPRGuqO3L_4cEE39HrvTGIGiGUXCFLxP/view?usp=drive_link
 ---
 
 ## ✨ Features

@@ -112,9 +112,18 @@
             <div class="d-grid gap-2 mb-3">
                 <!-- WhatsApp Connect -->
                 @php
-                    $waText = urlencode("Hi, I am interested in your listing: '{$listing->name}' listed for {$listing->formatted_price} on Marketplace.in. Is it still available? Link: ".url()->current());
+                    $sellerPhoneRaw = $listing->user->phone ?? '';
+                    $cleanPhone = preg_replace('/[^0-9]/', '', $sellerPhoneRaw);
+                    $cleanPhone = ltrim($cleanPhone, '0');
+                    if (strlen($cleanPhone) === 10) {
+                        $cleanPhone = '91' . $cleanPhone;
+                    }
+                    $waText = urlencode("Hi ".($listing->user->name ?? 'Seller').", I am interested in your listing: '{$listing->name}' ({$listing->formatted_price}) on Marketplace.in. Is it still available?");
+                    $waUrl = !empty($cleanPhone)
+                        ? "https://api.whatsapp.com/send?phone={$cleanPhone}&text={$waText}"
+                        : "https://api.whatsapp.com/send?text={$waText}";
                 @endphp
-                <a href="https://api.whatsapp.com/send?text={{ $waText }}" target="_blank" class="btn btn-success fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-success fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
                     <i class="fa-brands fa-whatsapp fs-5"></i> Chat on WhatsApp
                 </a>
 
@@ -236,8 +245,15 @@
 
     function revealSellerContact() {
         const phoneText = document.getElementById('phoneText');
-        const email = "{{ $listing->user->email ?? 'seller@marketplace.in' }}";
-        phoneText.innerHTML = `📞 +91 98765 43210 &bull; ${email}`;
+        const phone = @json($listing->user->phone ?? '');
+        const email = @json($listing->user->email ?? 'seller@marketplace.in');
+        
+        if (phone && phone.trim() !== '') {
+            const rawPhone = phone.replace(/[^0-9+]/g, '');
+            phoneText.innerHTML = `<a href="tel:${rawPhone}" class="text-dark text-decoration-none fw-bold"><i class="fa-solid fa-phone-volume text-success me-1"></i> ${phone}</a> &bull; <a href="mailto:${email}" class="text-muted text-decoration-none small">${email}</a>`;
+        } else {
+            phoneText.innerHTML = `<i class="fa-solid fa-envelope text-primary me-1"></i> <a href="mailto:${email}" class="text-dark text-decoration-none fw-bold">${email}</a>`;
+        }
         showToast('<i class="fa-solid fa-phone text-success"></i> Seller contact information revealed!');
     }
 

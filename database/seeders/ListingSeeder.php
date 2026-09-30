@@ -16,22 +16,22 @@ class ListingSeeder extends Seeder
         // Create demo users if not present
         $user1 = User::firstOrCreate(
             ['email' => 'rahul.sharma@example.com'],
-            ['name' => 'Rahul Sharma', 'password' => bcrypt('password')]
+            ['name' => 'Rahul Sharma', 'phone' => '+91 98201 12345', 'password' => bcrypt('password')]
         );
 
         $user2 = User::firstOrCreate(
             ['email' => 'priya.verma@example.com'],
-            ['name' => 'Priya Verma', 'password' => bcrypt('password')]
+            ['name' => 'Priya Verma', 'phone' => '+91 98112 67890', 'password' => bcrypt('password')]
         );
 
         $user3 = User::firstOrCreate(
             ['email' => 'amit.patel@example.com'],
-            ['name' => 'Amit Patel', 'password' => bcrypt('password')]
+            ['name' => 'Amit Patel', 'phone' => '+91 98980 54321', 'password' => bcrypt('password')]
         );
 
         $user4 = User::firstOrCreate(
             ['email' => 'sneha.reddy@example.com'],
-            ['name' => 'Sneha Reddy', 'password' => bcrypt('password')]
+            ['name' => 'Sneha Reddy', 'phone' => '+91 98490 98765', 'password' => bcrypt('password')]
         );
 
         $demoListings = [

@@ -34,6 +34,16 @@
                         @enderror
                     </div>
                     <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Phone / Contact Number *</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa-solid fa-phone text-muted"></i></span>
+                            <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required placeholder="e.g. +91 98765 43210 or 9876543210">
+                        </div>
+                        @error('phone')
+                            <div class="text-danger small mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fa-solid fa-lock text-muted"></i></span>
